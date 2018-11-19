@@ -5,6 +5,7 @@ import com.tina.mvpcore.net.callback.IFailure;
 import com.tina.mvpcore.net.callback.IRequest;
 import com.tina.mvpcore.net.callback.ISuccess;
 
+import java.io.File;
 import java.util.HashMap;
 
 import okhttp3.MediaType;
@@ -30,46 +31,82 @@ public class RestClientBuilder {
 
     private RequestBody mBody;
 
+    private File mFile;
+
+    private String mDownloaddir;
+
+    private String mExtentsion;
+
+    private String mFilename;
+
+
     RestClientBuilder() {
 
     }
 
-    public final RestClientBuilder url(String url){
+    public final RestClientBuilder url(String url) {
         this.mUrl = url;
         return this;
     }
 
-    public final RestClientBuilder params(HashMap<String, Object> params){
+    public final RestClientBuilder params(HashMap<String, Object> params) {
         this.mParams = params;
         return this;
     }
 
-    public final RestClientBuilder success(ISuccess success){
+    public final RestClientBuilder success(ISuccess success) {
         this.mSuccess = success;
         return this;
     }
 
-    public final RestClientBuilder request(IRequest request){
+    public final RestClientBuilder request(IRequest request) {
         this.mRequest = request;
         return this;
     }
 
-    public final RestClientBuilder failure(IFailure failure){
+    public final RestClientBuilder failure(IFailure failure) {
         this.mFailure = failure;
         return this;
     }
 
-    public final RestClientBuilder error(IError error){
+    public final RestClientBuilder error(IError error) {
         this.mError = error;
         return this;
     }
 
 
-    public final RestClientBuilder raw(String raw){
+    public final RestClientBuilder file(File file) {
+        this.mFile = file;
+        return this;
+    }
+
+    public final RestClientBuilder file(String file) {
+        this.mFile = new File(file);
+        return this;
+    }
+
+    public final RestClientBuilder extension(String extension) {
+        this.mExtentsion = extension;
+        return this;
+    }
+
+    public final RestClientBuilder filename(String filename) {
+        this.mFilename = filename;
+        return this;
+    }
+
+    public final RestClientBuilder dir(String  downloaddir) {
+        this.mDownloaddir = downloaddir;
+        return this;
+    }
+
+    public final RestClientBuilder raw(String raw) {
         this.mBody = RequestBody.create(MediaType.parse("application/json;charset=UTF-8"), raw);
         return this;
     }
 
 
-
+    public RestClient build() {
+        return new RestClient(mParams, mUrl, mRequest, mSuccess, mFailure, mError, mBody, mFile, mDownloaddir, mExtentsion, mFilename);
+    }
 }

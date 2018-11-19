@@ -5,9 +5,13 @@ import com.tina.mvpcore.net.callback.IFailure;
 import com.tina.mvpcore.net.callback.IRequest;
 import com.tina.mvpcore.net.callback.ISuccess;
 import com.tina.mvpcore.net.callback.RequestCallbacks;
+import com.tina.mvpcore.net.download.DownloadHandler;
 
+import java.io.File;
 import java.util.HashMap;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -32,13 +36,25 @@ public class RestClient {
 
     private final RequestBody BODY;
 
+    //上传下载
+    private final File FILE;
+
+    private final String DOWNLOAD_DIR;
+    private final String EXTENTSION;
+    private final String FILENAME;
+
+
     public RestClient(HashMap<String, Object> params,
                       String url,
                       IRequest request,
                       ISuccess success,
                       IFailure failure,
                       IError error,
-                      RequestBody body) {
+                      RequestBody body,
+                      File file,
+                      String downloadDir,
+                      String extension,
+                      String filename) {
 
         this.PARAMS = params;
         this.URL = url;
@@ -47,6 +63,10 @@ public class RestClient {
         this.FAILURE = failure;
         this.ERROR = error;
         this.BODY = body;
+        this.FILE = file;
+        this.DOWNLOAD_DIR = downloadDir;
+        this.EXTENTSION = extension;
+        this.FILENAME = filename;
     }
 
 
@@ -79,6 +99,11 @@ public class RestClient {
             case DELETE:
                 call = service.delete(URL, PARAMS);
                 break;
+            case UPLOAD:
+                RequestBody requestBody = RequestBody.create(MediaType.parse(MultipartBody.FORM.toString()), FILE);
+                final MultipartBody.Part body = MultipartBody.Part.createFormData("file", FILE.getName(), requestBody);
+                call = service.upload(URL, body );
+                break;
         }
         if (null != call){
             call.enqueue(getReqestCallback());
@@ -107,6 +132,14 @@ public class RestClient {
 
     public final void delete(){
         request(HttpMethod.DELETE);
+    }
+
+    public final void upload(){
+        request(HttpMethod.UPLOAD);
+    }
+
+    public final void download(){
+        new DownloadHandler(PARAMS, URL, REQUEST, SUCCESS, FAILURE, ERROR, DOWNLOAD_DIR, EXTENTSION, FILENAME);
     }
 
 }
