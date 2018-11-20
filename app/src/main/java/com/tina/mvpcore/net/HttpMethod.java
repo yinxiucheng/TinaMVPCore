@@ -8,7 +8,7 @@ package com.tina.mvpcore.net;
  *
  */
 
-enum HttpMethod {
+public enum HttpMethod {
 
     GET,
 

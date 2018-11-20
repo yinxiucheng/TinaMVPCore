@@ -12,101 +12,82 @@ import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
 /**
- * @author yxc
- * @date 2018/11/19
+ * Created by jett on 2018/6/6.
  */
+
 public class RestClientBuilder {
-
-    private HashMap<String, Object> mParams;
-
+    private HashMap<String,Object> mParams;
     private String mUrl;
-
-    private ISuccess mSuccess;
-
     private IRequest mRequest;
-
+    private ISuccess mSuccess;
     private IFailure mFailure;
-
     private IError mError;
+    private  RequestBody mBody;
 
-    private RequestBody mBody;
-
+    //上传下载
     private File mFile;
 
-    private String mDownloaddir;
-
-    private String mExtentsion;
-
+    private String mDownloadDir;
+    private String mExtension;
     private String mFilename;
 
-
-    RestClientBuilder() {
+    RestClientBuilder(){
 
     }
-
-    public final RestClientBuilder url(String url) {
-        this.mUrl = url;
+    public final RestClientBuilder url(String url){
+        this.mUrl=url;
         return this;
     }
-
-    public final RestClientBuilder params(HashMap<String, Object> params) {
-        this.mParams = params;
+    public final RestClientBuilder params(HashMap<String,Object> params){
+        this.mParams=params;
         return this;
     }
-
-    public final RestClientBuilder success(ISuccess success) {
-        this.mSuccess = success;
+    public final RestClientBuilder success(ISuccess success){
+        this.mSuccess=success;
         return this;
     }
-
-    public final RestClientBuilder request(IRequest request) {
-        this.mRequest = request;
+    public final RestClientBuilder request(IRequest request){
+        this.mRequest=request;
         return this;
     }
-
-    public final RestClientBuilder failure(IFailure failure) {
-        this.mFailure = failure;
+    public final RestClientBuilder error(IError error ){
+        this.mError=error;
         return this;
     }
-
-    public final RestClientBuilder error(IError error) {
-        this.mError = error;
+    public final RestClientBuilder failure(IFailure failure){
+        this.mFailure=failure;
         return this;
     }
-
-
-    public final RestClientBuilder file(File file) {
-        this.mFile = file;
+    public final RestClientBuilder raw(String raw){
+        this.mBody=RequestBody.create(
+                MediaType.parse("application/json;charset=UTF-8"),raw);
         return this;
     }
-
-    public final RestClientBuilder file(String file) {
-        this.mFile = new File(file);
+    //上传
+    public final RestClientBuilder file(File file){
+        this.mFile=file;
         return this;
     }
-
-    public final RestClientBuilder extension(String extension) {
-        this.mExtentsion = extension;
+    public final RestClientBuilder file(String file){
+        this.mFile=new File(file);
         return this;
     }
-
-    public final RestClientBuilder filename(String filename) {
-        this.mFilename = filename;
+    //下载
+    public final RestClientBuilder dir(String dir){
+        this.mDownloadDir=dir;
         return this;
     }
-
-    public final RestClientBuilder dir(String  downloaddir) {
-        this.mDownloaddir = downloaddir;
+    public final RestClientBuilder extension(String extension){
+        this.mExtension=extension;
         return this;
     }
-
-    public final RestClientBuilder raw(String raw) {
-        this.mBody = RequestBody.create(MediaType.parse("application/json;charset=UTF-8"), raw);
+    public final RestClientBuilder filename(String filename){
+        this.mFilename=filename;
         return this;
     }
 
 
-    public RestClient build() {
-        return new RestClient(mParams, mUrl, mRequest, mSuccess, mFailure, mError, mBody, mFile, mDownloaddir, mExtentsion, mFilename);
+    public final RestClient build(){
+        return new RestClient(mParams,mUrl,mRequest,mSuccess,mFailure,mError,mBody,mFile,mDownloadDir,mExtension,mFilename);
     }
 }

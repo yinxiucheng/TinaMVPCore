@@ -7,11 +7,18 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.tina.mvpcore.net.RestClient;
+import com.tina.mvpcore.net.rx.RxRestClient;
 import com.tina.mvpcore.net.callback.IError;
 import com.tina.mvpcore.net.callback.IFailure;
 import com.tina.mvpcore.net.callback.ISuccess;
 
 import java.util.HashMap;
+
+import io.reactivex.Observer;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
 //                .get();
         //上传
         //http://dengpaoedu.com:8080/fileuploadanddownload/uploadServlet.
+
         HashMap params = new HashMap();
         params.put("file", "abcd.txt");
         RestClient.create()
@@ -61,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                  })
                  .build().upload();
+
         //测试下载  http://dengpaoedu.com:8080/examples/test.zip
 //        RestClient.create()
 //                .params(params)
@@ -73,7 +82,44 @@ public class MainActivity extends AppCompatActivity {
 //                        Toast.makeText(MainActivity.this, "下载成功", Toast.LENGTH_SHORT).show();
 //                    }
 //                }).build().download();
-
-
     }
+
+
+    public void rxInvoke(){
+        HashMap params = new HashMap();
+        String url="/login/info";
+        params.put("username","jett");
+        params.put("password","123");
+
+        RxRestClient.create()
+                .url(url)
+                .params(params)
+                .build()
+                .get()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+
 }

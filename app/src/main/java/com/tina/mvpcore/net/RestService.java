@@ -40,7 +40,7 @@ public interface RestService {
     @DELETE
     Call<String> delete(@Url String url, @QueryMap Map<String, Object> params);
 
-    //下载是直接到内存，所以需要  @Streaming
+    //下载是直接到内存,所以需要 @Streaming
     @Streaming
     @GET
     Call<ResponseBody> download(@Url String url, @QueryMap Map<String, Object> params);
